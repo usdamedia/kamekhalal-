@@ -1,7 +1,6 @@
 import UIKit
 import Capacitor
 import FirebaseCore
-import GoogleSignIn // Added for Google Sign-In
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -37,11 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // Handle Google Sign-in URL
-        if GIDSignIn.sharedInstance.handle(url) {
-            return true
-        }
-
         // Handle Capacitor URL
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
