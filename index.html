@@ -2,8 +2,19 @@
 <html lang="ms">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>KamekHalal</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#292524" />
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(error => {
+            console.error('ServiceWorker registration failed:', error);
+          });
+        });
+      }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {

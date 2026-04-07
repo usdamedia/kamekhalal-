@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { Loader2, Package, Home, Database, ArrowRight, ArrowLeft, Check, Search, ShieldCheck, User as UserIcon, Trash2, CheckCircle, X, Trophy, AlertCircle, PlusSquare, Building2, SlidersHorizontal, Utensils, Sparkles, Pill, Truck, Factory, Stethoscope, Beef, Image as ImageIcon, Square, CheckSquare, PlusCircle, Eye, AlertTriangle, Globe, MapPin, Store, Merge, AlarmClock, CalendarX } from 'lucide-react';
 import ResultCard from './components/ResultCard';
 import { LoginScreen } from './components/LoginScreen';
@@ -47,6 +48,8 @@ const App: React.FC = () => {
   const [dashboardSearch, setDashboardSearch] = useState(""); 
   const [viewingCategory, setViewingCategory] = useState<string | 'Semua'>('Semua');
   const [leaderboardUsers, setLeaderboardUsers] = useState<User[]>([]);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   const CATEGORY_ICONS: Record<string, React.ElementType> = {
     "Produk Makanan dan Minuman": Utensils,
@@ -58,6 +61,37 @@ const App: React.FC = () => {
     "Pengilangan Kontrak/OEM": Factory,
     "Produk Peranti Perubatan": Stethoscope,
     "Premis Makanan": Store
+  };
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      console.log('beforeinstallprompt event fired');
+    };
+
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+      console.log('App was installed');
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
   };
 
   useEffect(() => {
@@ -609,6 +643,41 @@ const App: React.FC = () => {
                )}
            </div>
        </div>
+
+        {/* PWA Add to Home Screen Banner - Web Only */}
+        {!Capacitor.isNativePlatform() && deferredPrompt && (
+          <div className="mx-1 animate-in zoom-in-95 fade-in duration-300">
+            <div className="bg-gradient-to-br from-stone-800 to-stone-900 rounded-[2rem] p-6 relative overflow-hidden shadow-2xl shadow-stone-800/20 group">
+              {/* Background Decoration */}
+              <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-stone-500/10 rounded-full blur-3xl group-hover:bg-stone-500/20 transition-all duration-700"></div>
+              
+              <div className="relative z-10 flex items-center justify-between gap-4">
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-white/10 backdrop-blur-md p-1.5 rounded-lg border border-white/10">
+                      <PlusSquare size={14} className="text-stone-100" />
+                    </div>
+                    <span className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.2em]">Eksklusif Web</span>
+                  </div>
+                  <h4 className="text-lg font-bold text-white leading-tight">
+                    Nikmati Pengalaman App <span className="text-stone-400">Penuh</span>
+                  </h4>
+                  <p className="text-xs text-stone-400 font-medium leading-relaxed max-w-[200px]">
+                    Tambah KamekHalal ke skrin utama anda untuk akses lebih pantas.
+                  </p>
+                </div>
+                
+                <button 
+                  onClick={handleInstallClick}
+                  className="bg-white hover:bg-stone-50 text-stone-900 px-5 py-3 rounded-2xl font-bold text-xs shadow-xl shadow-black/10 active:scale-95 transition-all text-center whitespace-nowrap"
+                >
+                  Pasang
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
        {/* Explore Categories */}
        <div className="space-y-4">
