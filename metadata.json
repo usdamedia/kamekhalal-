@@ -1,0 +1,7 @@
+{
+  "name": "KamekHalal",
+  "description": "Aplikasi untuk menyemak dan merekod maklumat produk Halal secara manual untuk kegunaan komuniti.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
