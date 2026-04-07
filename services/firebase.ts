@@ -39,14 +39,18 @@ import { ProductData, User, ISubmission, IProduct } from "../types";
 import { env } from "./config";
 
 const firebaseConfig = {
-  apiKey: env.firebaseApiKey || "AIzaSyC-98paOL4X9ZJ3dLHXY5Z5zKifwwl1JEE",
-  authDomain: env.firebaseAuthDomain || "kamekhalal-e3eaa.firebaseapp.com",
-  projectId: env.firebaseProjectId || "kamekhalal-e3eaa",
-  storageBucket: env.firebaseStorageBucket || "kamekhalal-e3eaa.firebasestorage.app",
-  messagingSenderId: env.firebaseMessagingSenderId || "194397858986",
-  appId: env.firebaseAppId || "1:194397858986:web:363ed70a713cba8a8834d3",
-  measurementId: env.firebaseMeasurementId || "G-XHG1NLM74Q"
+  apiKey: env.firebaseApiKey,
+  authDomain: env.firebaseAuthDomain,
+  projectId: env.firebaseProjectId,
+  storageBucket: env.firebaseStorageBucket,
+  messagingSenderId: env.firebaseMessagingSenderId,
+  appId: env.firebaseAppId,
+  measurementId: env.firebaseMeasurementId
 };
+
+if (!firebaseConfig.apiKey) {
+  console.error("CRITICAL: Firebase API key is missing from environment configuration.");
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

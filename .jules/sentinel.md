@@ -1,0 +1,4 @@
+## 2024-05-18 - Hardcoded Firebase Configurations
+**Vulnerability:** Found hardcoded Firebase API keys and configuration parameters acting as fallbacks in `services/firebase.ts`.
+**Learning:** Hardcoding sensitive configuration in source code runs the risk of leaking internal environment details, especially if the repository becomes public. Even if client-side Firebase keys aren't strictly "secrets" depending on security rules, keeping them in environment variables is proper defense-in-depth to avoid configuration exposure and prevents accidental commits of production or sensitive instance keys.
+**Prevention:** Strictly rely on environment variables (`import.meta.env` or similar) for API keys and configuration blocks. Add checks to log or error out if configuration is missing, rather than masking it with hardcoded values.
