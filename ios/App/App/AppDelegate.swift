@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
-import FirebaseCore // Added for Firebase
+import FirebaseCore
+import GoogleSignIn // Added for Google Sign-In
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -36,8 +37,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // Called when the app was launched with a url. Feel free to add additional processing here,
-        // but if you want the App API to support tracking app url opens, make sure to keep this call
+        // Handle Google Sign-in URL
+        if GIDSignIn.sharedInstance.handle(url) {
+            return true
+        }
+
+        // Handle Capacitor URL
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
